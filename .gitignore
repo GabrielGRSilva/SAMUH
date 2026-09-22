@@ -1,0 +1,64 @@
+# Compiled binaries
+samuh
+samuh.exe
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test and coverage output
+*.test
+*.out
+coverage.html
+coverage.txt
+*.prof
+
+# Generated reports (users should not commit scan results)
+*.sarif
+report.*
+!internal/reporter/**
+
+# OS-specific
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# IDE and editor config
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+*.iml
+
+# Go workspace
+vendor/
+
+# Environment and secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+credentials.json
+secrets.json
+config.local.*
+*.secret
+
+# Debug artifacts
+debug
+__debug_bin*
+*.log
+
+# Scratch/temp files
+tmp/
+temp/
+scratch/

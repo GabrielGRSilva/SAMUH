@@ -22,7 +22,7 @@
 
 ```bash
 git clone <repository-url>
-cd SecScanner
+cd SAMUH
 go build -o samuh .
 ```
 

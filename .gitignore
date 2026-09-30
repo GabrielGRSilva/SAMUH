@@ -1,32 +1,42 @@
-# Compiled binaries
+# =============================================================================
+# SAMUH .gitignore
+# =============================================================================
+
+# ---- Compiled binaries ----
 samuh
 samuh.exe
 *.exe
 *.dll
 *.so
 *.dylib
+*.o
+*.a
 
-# Test and coverage output
+# ---- Test and coverage output ----
 *.test
 *.out
 coverage.html
 coverage.txt
 *.prof
+*.coverprofile
 
-# Generated reports (users should not commit scan results)
+# ---- Generated scan reports ----
+# Scan reports can contain details about vulnerabilities in YOUR code.
+# Never commit them — they could expose your security weaknesses publicly.
 *.sarif
 report.*
 !internal/reporter/**
 
-# OS-specific
+# ---- OS-specific junk ----
 .DS_Store
 Thumbs.db
 Desktop.ini
 *.swp
 *.swo
 *~
+ehthumbs.db
 
-# IDE and editor config
+# ---- IDE and editor config ----
 .idea/
 .vscode/
 *.sublime-project
@@ -34,11 +44,14 @@ Desktop.ini
 .project
 .settings/
 *.iml
+*.code-workspace
+.history/
 
-# Go workspace
+# ---- Go workspace ----
 vendor/
 
-# Environment and secrets
+# ---- Environment, secrets, and credentials ----
+# These files often contain API keys, passwords, or tokens.
 .env
 .env.*
 *.env
@@ -52,13 +65,17 @@ credentials.json
 secrets.json
 config.local.*
 *.secret
+*.keystore
+*.jks
 
-# Debug artifacts
+# ---- Debug artifacts ----
 debug
 __debug_bin*
 *.log
 
-# Scratch/temp files
+# ---- Scratch / temp files ----
 tmp/
 temp/
 scratch/
+dist/
+build/

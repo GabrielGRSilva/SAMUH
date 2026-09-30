@@ -5,6 +5,7 @@ package engine
 import (
 	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 	"runtime"
 	"sort"
@@ -34,6 +35,9 @@ type Options struct {
 
 	// MaxFileSize is the maximum file size in bytes to scan.
 	MaxFileSize int64
+
+	// Verbose enables detailed progress output during scanning.
+	Verbose bool
 }
 
 // Engine orchestrates the scanning process by coordinating file discovery,
@@ -63,11 +67,24 @@ func (e *Engine) Run(ctx context.Context) (*rules.ScanReport, error) {
 		return nil, fmt.Errorf("failed to discover files: %w", err)
 	}
 
+	if e.opts.Verbose {
+		fmt.Fprintf(os.Stderr, "[verbose] Discovered %d file(s) to scan\n", len(files))
+	}
+
 	// Get analyzers, optionally filtering by language
 	analyzers := e.getAnalyzers()
 
 	if len(analyzers) == 0 {
 		return nil, fmt.Errorf("no analyzers available for the specified languages")
+	}
+
+	if e.opts.Verbose {
+		names := make([]string, len(analyzers))
+		for i, a := range analyzers {
+			names[i] = a.Name()
+		}
+		fmt.Fprintf(os.Stderr, "[verbose] Active analyzers: %s\n", strings.Join(names, ", "))
+		fmt.Fprintf(os.Stderr, "[verbose] Worker pool size: %d\n", runtime.NumCPU())
 	}
 
 	// Run file-level analysis concurrently
@@ -119,11 +136,22 @@ func (e *Engine) Run(ctx context.Context) (*rules.ScanReport, error) {
 	}
 
 	// Run project-level analysis
+	if e.opts.Verbose {
+		fmt.Fprintf(os.Stderr, "[verbose] Running project-level analysis...\n")
+	}
 	for _, a := range analyzers {
 		findings, err := a.AnalyzeProject(ctx, e.opts.Path)
 		if err == nil && len(findings) > 0 {
 			allFindings = append(allFindings, findings...)
+			if e.opts.Verbose {
+				fmt.Fprintf(os.Stderr, "[verbose] %s project analysis: %d finding(s)\n", a.Name(), len(findings))
+			}
 		}
+	}
+
+	if e.opts.Verbose {
+		fmt.Fprintf(os.Stderr, "[verbose] Total raw findings before filtering: %d\n", len(allFindings))
+		fmt.Fprintf(os.Stderr, "[verbose] Minimum severity filter: %s\n", e.opts.MinSeverity)
 	}
 
 	// Filter by minimum severity
@@ -132,6 +160,10 @@ func (e *Engine) Run(ctx context.Context) (*rules.ScanReport, error) {
 		if f.Severity.IsAtLeast(e.opts.MinSeverity) {
 			filteredFindings = append(filteredFindings, f)
 		}
+	}
+
+	if e.opts.Verbose {
+		fmt.Fprintf(os.Stderr, "[verbose] Findings after severity filter: %d\n", len(filteredFindings))
 	}
 
 	// Sort by severity (critical first)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -96,6 +97,7 @@ func runScan(cmd *cobra.Command, args []string) {
 		Languages:   langs,
 		MinSeverity: minSev,
 		MaxFileSize: maxSize,
+		Verbose:     verbose,
 	}
 
 	eng := engine.New(registry, opts)
@@ -128,6 +130,8 @@ func runScan(cmd *cobra.Command, args []string) {
 
 	// Write to file or stdout
 	if out != "" {
+		// Clean the output path to prevent any path traversal
+		out = filepath.Clean(out)
 		if err := os.WriteFile(out, reportBytes, 0644); err != nil {
 			fmt.Fprintf(os.Stderr, "Error writing output file: %v\n", err)
 			os.Exit(1)

@@ -79,6 +79,23 @@ func (s *Scanner) DiscoverFiles(ctx context.Context) ([]*analyzer.FileContext, e
 			}
 		}
 
+		// Safety: resolve symlinks and verify the file is within the project root.
+		// This prevents a malicious project from using symlinks to read files
+		// outside the project directory (e.g., /etc/shadow).
+		realPath, evalErr := filepath.EvalSymlinks(path)
+		if evalErr != nil {
+			return nil // Skip files whose real path can't be resolved
+		}
+		realBase, _ := filepath.EvalSymlinks(absBasePath)
+		if realBase == "" {
+			realBase = absBasePath
+		}
+		if !strings.HasPrefix(filepath.Clean(realPath), filepath.Clean(realBase)+string(filepath.Separator)) &&
+			filepath.Clean(realPath) != filepath.Clean(realBase) {
+			// File resolves outside the project root — skip it
+			return nil
+		}
+
 		// Read full content for the Content field
 		fullContent, readErr2 := os.ReadFile(path)
 		if readErr2 != nil {

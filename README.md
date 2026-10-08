@@ -1,13 +1,15 @@
 # 🛡️ SAMUH — Secure Application Makes U Happy
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)](https://go.dev)
+[![Go](https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go&logoColor=white)](https://go.dev)
 
 **SAMUH** is a command-line tool that scans your code for security problems. It works with **PHP**, **Node.js**, and **JavaScript/TypeScript** projects — and it tells you exactly what's wrong, where, and how to fix it.
 
 Every issue it finds is mapped to real-world security standards ([OWASP Top 10:2025](https://owasp.org/Top10/) and [NIST CSF 2.0](https://www.nist.gov/cyberframework)), so you and your team know exactly what kind of risk each problem represents.
 
 ---
+
+**Note on Project Scope:** SAMUH was developed as a Proof of Concept (PoC) and Applied Security Laboratory. Its primary goal is to explore Go concurrency patterns, CLI architecture, and vulnerability classification (OWASP/NIST) in a high-performance environment. While fully functional for its defined scope, it is an experimental tool rather than a replacement for enterprise SAST solutions.
 
 ## 📖 Table of Contents
 
@@ -45,11 +47,11 @@ When you run SAMUH against your project, it:
 
 ### Prerequisites
 
-You need **Go 1.21 or newer** installed. To check:
+You need **Go 1.26 or newer** installed. To check:
 
 ```bash
 go version
-# Should print something like: go version go1.21.0 windows/amd64
+# Should print something like: go version go1.26.0 windows/amd64
 ```
 
 If you don't have Go, download it from [go.dev/dl](https://go.dev/dl/).
@@ -370,6 +372,8 @@ SAMUH covers all **10 categories** of the OWASP Top 10:2025:
 | A09 | **Logging Failures** | Passwords written to logs, missing auth event logging |
 | A10 | **Exception Handling** | Empty `catch {}` blocks, leaked stack traces, swallowed errors |
 
+**Known Limitations: ** SAMUH uses highly optimized regex and line-by-line pattern matching. Because it does not perform Abstract Syntax Tree (AST) parsing or data-flow (taint) analysis, it cannot verify if user input actually reaches a vulnerable sink. This means it may flag safe code (False Positives) or miss complex, multi-file execution paths (False Negatives).
+
 ### Supported Languages & File Types
 
 | Language | Scanned Extensions |
@@ -409,7 +413,7 @@ jobs:
       # 2. Set up Go (needed to build SAMUH)
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: '1.26'
 
       # 3. Build SAMUH from source
       #    (Replace with your actual repo URL)
@@ -457,7 +461,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: '1.26'
 
       - name: Build SAMUH
         run: |

@@ -59,7 +59,7 @@ If you don't have Go, download it from [go.dev/dl](https://go.dev/dl/).
 ### Step 1: Get the Code
 
 ```bash
-git clone <your-repository-url>
+git clone <https://github.com/GabrielGRSilva/SAMUH>
 cd samuh
 ```
 

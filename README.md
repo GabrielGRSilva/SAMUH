@@ -60,7 +60,7 @@ If you don't have Go, download it from [go.dev/dl](https://go.dev/dl/).
 
 ```bash
 git clone <your-repository-url>
-cd SecScanner
+cd samuh
 ```
 
 ### Step 2: Build the Binary
